@@ -10,9 +10,24 @@
       "mensaje": "El día en que empezó todo.\nLa foto todavía me la debes."
     },
     {
+      "titulo": "12 de abril",
+      "fotos": [
+        "fotos/IMG-20260412-WA0001.jpg"
+      ],
+      "mensaje": "La primera foto de esta historia:\nnuestras sombras, ya juntitas."
+    },
+    {
+      "titulo": "25 de mayo",
+      "fotos": [
+        "fotos/IMG-20260525-WA0014.jpg"
+      ],
+      "mensaje": "Un arco de flores,\nun espejo y nosotros dos."
+    },
+    {
       "titulo": "30 de mayo",
       "fotos": [
-        "fotos/20260530_195917.jpg"
+        "fotos/20260530_195917.jpg",
+        "fotos/IMG-20260531-WA0115.jpg"
       ],
       "mensaje": "Una noche de folclor:\npapel picado, baile y sonrisas."
     },
