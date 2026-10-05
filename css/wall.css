@@ -1,0 +1,103 @@
+/* ---------- Muro de LEGO ----------
+   --u = ancho de un botón (lo calcula wall.js para que el muro quepa).
+   Cada pieza mide --n botones de ancho y 1.2 de alto. */
+.wall-area {
+  --u: 28px;
+  grid-area: wall;
+  width: min(100%, 540px);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+.wall {
+  position: relative;
+  z-index: 1;
+  width: calc(var(--u) * 12);
+  height: calc(var(--u) * (var(--rows, 1) * 1.2 + .3));
+}
+
+/* Aspecto de pieza, compartido por los bloques del muro y la piececita de la tarjeta */
+.lego {
+  position: relative;
+  border-radius: 2px;
+  background: var(--c);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, .12),
+    inset 0 2px 0 rgba(255, 255, 255, .22),
+    inset 0 -2px 0 rgba(0, 0, 0, .1);
+}
+/* Botones de arriba */
+.lego::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -17%;
+  height: 19%;
+  background:
+    linear-gradient(90deg, transparent 27%, rgba(255, 255, 255, .35) 27% 35%, transparent 35%) 0 0 / calc(100% / var(--n)) 100% repeat-x,
+    linear-gradient(90deg, transparent 20%, var(--c) 20% 68%, color-mix(in srgb, var(--c), #000 18%) 68% 80%, transparent 80%) 0 0 / calc(100% / var(--n)) 100% repeat-x;
+  border-radius: 3px 3px 0 0;
+  pointer-events: none;
+}
+
+.brick {
+  position: absolute;
+  left: calc(var(--x) * var(--u));
+  bottom: calc(var(--y) * var(--u) * 1.2);
+  width: calc(var(--n) * var(--u));
+  height: calc(var(--u) * 1.2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  visibility: hidden; /* aparece cuando cae */
+  -webkit-tap-highlight-color: transparent;
+}
+.brick.placed { visibility: visible; }
+.brick.placed:hover { filter: brightness(1.08); }
+.brick:focus-visible { outline: 3px solid var(--crema); outline-offset: 1px; z-index: 3; }
+/* El bloque del recuerdo que se está viendo brilla */
+.brick.active {
+  z-index: 2;
+  animation: glow 1.4s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from { filter: brightness(1.05); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12), inset 0 2px 0 rgba(255, 255, 255, .22), 0 0 0 2px rgba(255, 250, 242, .9), 0 0 6px 2px rgba(255, 236, 170, .5); }
+  to   { filter: brightness(1.18); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12), inset 0 2px 0 rgba(255, 255, 255, .22), 0 0 0 2px rgba(255, 250, 242, .9), 0 0 16px 5px rgba(255, 236, 170, .85); }
+}
+
+/* Copia del bloque que cae desde arriba de la pantalla hasta su lugar */
+.brick.flyer {
+  position: fixed;
+  bottom: auto;
+  visibility: visible;
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* Base donde se arma el muro */
+.plate {
+  position: relative;
+  width: calc(var(--u) * 13);
+  height: calc(var(--u) * .5);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #5b3f78, #3b2350);
+  box-shadow: 0 8px 18px rgba(45, 22, 72, .35), inset 0 1px 0 rgba(255, 255, 255, .15);
+}
+.plate::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--u) * .5);
+  right: calc(var(--u) * .5);
+  top: calc(var(--u) * -.22);
+  height: calc(var(--u) * .23);
+  background: linear-gradient(90deg, transparent 20%, #6a4a8a 20% 68%, #452c5e 68% 80%, transparent 80%) 0 0 / var(--u) 100% repeat-x;
+  border-radius: 3px 3px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brick.active { animation: none; box-shadow: 0 0 0 2px rgba(255, 250, 242, .9); }
+}

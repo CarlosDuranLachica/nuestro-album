@@ -1,0 +1,8 @@
+{
+  // Live Preview: escuchar en la IP de la red local para abrirlo también desde el celular.
+  // Live Preview arma la URL de la vista previa con este host, así que 0.0.0.0 no sirve.
+  // Si la IP de la PC cambia, la extensión regresa sola a 127.0.0.1.
+  "livePreview.hostIP": "192.168.1.65",
+  "livePreview.portNumber": 3000,
+  "livePreview.defaultPreviewPath": "/index.html"
+}

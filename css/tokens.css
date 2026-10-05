@@ -1,0 +1,66 @@
+/* =========================================================
+   Sistema de diseño
+   - 2 fuentes: títulos (Dancing Script) y todo lo escrito a mano (Caveat)
+   - 4 acentos: rosa mexicano, turquesa, oro y ciruela (tinta)
+   - 2 radios y 2 sombras
+   ========================================================= */
+:root {
+  --f-title: "Dancing Script", cursive;
+  --f-hand: "Caveat", cursive;
+  --f-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --rosa: #d6336c;
+  --turquesa: #1c9c98;
+  --oro: #e3a33a;
+  --morado: #8a6bb8;
+  --ciruela: #3b2350;
+  --ciruela-soft: #7a5c8e;
+  --crema: #fffaf2;
+  --papel: #fdf5e8;
+
+  --r-lg: 14px;
+  --r-sm: 6px;
+  --shadow: 0 18px 44px rgba(45, 22, 72, .38), 0 2px 6px rgba(45, 22, 72, .12);
+  --shadow-sm: 0 6px 16px rgba(45, 22, 72, .22);
+
+  /* Panel de edición */
+  --accent: var(--rosa);
+  --panel-bg: #fffaf6;
+  --panel-ink: #3b2350;
+  --panel-soft: #7a5c8e;
+  --line: #eadbe6;
+  --field: #ffffff;
+
+  --sparkle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0C55 35 65 45 100 50 65 55 55 65 50 100 45 65 35 55 0 50 35 45 45 35 50 0z'/%3E%3C/svg%3E");
+  --heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90C22 70 4 53 4 31A23 23 0 0 1 50 20a23 23 0 0 1 46 11c0 22-18 39-46 59z'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --panel-bg: #241a30;
+    --panel-ink: #f3e8f5;
+    --panel-soft: #b9a3c9;
+    --line: #433452;
+    --field: #1a1224;
+  }
+}
+:root[data-theme="dark"] {
+  --panel-bg: #241a30;
+  --panel-ink: #f3e8f5;
+  --panel-soft: #b9a3c9;
+  --line: #433452;
+  --field: #1a1224;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body {
+  min-height: 100dvh;
+  background-color: #6d5bb3;
+  background-image:
+    radial-gradient(ellipse at 50% 108%, rgba(255, 222, 170, .85), transparent 45%),
+    linear-gradient(180deg, #2f2f74 0%, #62539f 28%, #b67fb0 55%, #f0a592 80%, #f8cfa0 100%);
+  background-attachment: fixed;
+  font-family: var(--f-hand);
+  color: var(--ciruela);
+}
+button { font: inherit; color: inherit; }

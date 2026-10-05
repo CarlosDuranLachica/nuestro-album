@@ -1,0 +1,68 @@
+/* ---------- Escenario ----------
+   Celular vertical: encabezado / recuerdo / muro.
+   No hay botones: se toca la pantalla (ver player.js).
+   Pantalla ancha o celular horizontal: recuerdo a la izquierda, muro a la derecha. */
+.stage {
+  position: relative;
+  z-index: 1;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "head" "card" "wall";
+  justify-items: center;
+  gap: clamp(8px, 1.6dvh, 16px);
+  padding: calc(8px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+           calc(12px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Encabezado: papel picado y título ---------- */
+.top { grid-area: head; width: min(100%, 560px); text-align: center; }
+.top-title {
+  margin: 2px 0 0;
+  font-family: var(--f-title);
+  font-weight: 700;
+  font-size: clamp(1.5rem, min(7vw, 4.2dvh), 2.1rem);
+  line-height: 1.1;
+  color: var(--crema);
+  text-shadow: 0 2px 8px rgba(45, 22, 72, .45);
+  transition: opacity .4s;
+}
+/* En la portada el título grande ya está en la tarjeta */
+.is-cover .top-title { opacity: 0; }
+
+.picado { pointer-events: none; }
+.picado svg { display: block; width: 100%; height: auto; overflow: visible; }
+.picado .flag {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: sway 3.2s ease-in-out var(--delay) infinite alternate;
+}
+@keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+
+/* ---------- Dos columnas ---------- */
+@media (orientation: landscape) and (min-width: 900px), (orientation: landscape) and (max-height: 540px) {
+  .stage {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "head head" "card wall";
+    column-gap: clamp(20px, 4vw, 56px);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .top { width: min(100%, 720px); }
+  .card-slot { width: min(100%, 680px); }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .top { display: flex; align-items: center; gap: 16px; width: 100%; }
+  .top .picado { flex: 1; max-width: 45%; }
+  .top-title { margin: 0; font-size: clamp(1.2rem, 7dvh, 1.7rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picado .flag { animation: none; }
+}

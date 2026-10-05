@@ -1,0 +1,63 @@
+/* ---------- Cielo: nubes, estrellas y luciérnagas ---------- */
+.sky { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.cloud {
+  position: absolute;
+  left: 0;
+  width: var(--w);
+  height: calc(var(--w) * .38);
+  background:
+    radial-gradient(circle at 28% 62%, #fff 0 20%, transparent 21%),
+    radial-gradient(circle at 50% 42%, #fff 0 26%, transparent 27%),
+    radial-gradient(circle at 72% 60%, #fff 0 19%, transparent 20%),
+    radial-gradient(ellipse at 50% 78%, #fff 0 44%, transparent 45%);
+  opacity: var(--o);
+  filter: blur(1.5px);
+  animation: drift var(--d) linear var(--delay) infinite;
+}
+@keyframes drift { from { transform: translateX(-40vw); } to { transform: translateX(120vw); } }
+.star {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, .8);
+  animation: twinkle var(--d) ease-in-out var(--delay) infinite;
+}
+@keyframes twinkle { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff4c2;
+  box-shadow: 0 0 10px 4px rgba(255, 214, 110, .65);
+  animation: wander var(--d) ease-in-out var(--delay) infinite alternate, twinkle 2.6s ease-in-out var(--delay) infinite;
+}
+@keyframes wander {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(var(--x), var(--y)); }
+  100% { transform: translate(calc(var(--x) * -.6), calc(var(--y) * 1.4)); }
+}
+
+/* Corazones y estrellitas (al tocar la foto o cuando aterriza un bloque) */
+.burst {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  background: var(--c);
+  -webkit-mask: var(--m) center / contain no-repeat;
+  mask: var(--m) center / contain no-repeat;
+  pointer-events: none;
+  z-index: 8;
+  animation: pop .9s ease-out forwards;
+}
+@keyframes pop {
+  0% { transform: translate(0, 0) scale(.3); opacity: 1; }
+  100% { transform: translate(var(--x), var(--y)) scale(1.15) rotate(var(--r)); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud, .star, .firefly { animation: none; }
+}

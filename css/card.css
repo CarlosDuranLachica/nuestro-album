@@ -1,0 +1,449 @@
+/* ---------- Tarjeta del recuerdo ----------
+   Las tarjetas se apilan en la misma celda: la que sale y la que entra se cruzan. */
+.card-slot {
+  grid-area: card;
+  position: relative;
+  display: grid;
+  width: min(100%, 540px);
+  height: 100%;
+  min-height: 0;
+  touch-action: pan-y;
+}
+.card {
+  grid-area: 1 / 1;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border-radius: var(--r-lg);
+  background-color: var(--papel);
+  /* Grano de papel muy suave */
+  background-image:
+    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, .7), transparent 65%),
+    repeating-linear-gradient(0deg, rgba(59, 35, 80, .018) 0 1px, transparent 1px 3px);
+  box-shadow: var(--shadow);
+  animation: card-in .55s cubic-bezier(.2, .8, .3, 1) both;
+}
+/* Sin línea: solo un halo rosado suave en la orilla */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(214, 51, 108, .18), inset 0 0 38px rgba(214, 120, 110, .16);
+  pointer-events: none;
+}
+.card.leaving { animation: card-out .35s ease-in forwards; pointer-events: none; }
+@keyframes card-in { from { opacity: 0; transform: translateY(-22px) rotate(-1.2deg); } }
+@keyframes card-out { to { opacity: 0; transform: translateY(26px) scale(.96); } }
+
+/* Ícono de pausa / seguir que aparece al tocar el centro */
+.flash {
+  grid-area: 1 / 1;
+  place-self: center;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(59, 35, 80, .55);
+  color: #fff;
+  pointer-events: none;
+  animation: flash .8s ease-out forwards;
+}
+.flash svg { width: 40px; height: 40px; fill: currentColor; }
+@keyframes flash {
+  0% { opacity: 0; transform: scale(.7); }
+  20% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+/* ---------- Recuerdo: título, fotos, descripción y canción ---------- */
+.card.memory {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  justify-items: center;
+  gap: clamp(6px, 1.4dvh, 14px);
+  padding: clamp(14px, 2.4dvh, 24px) 24px clamp(14px, 2.6dvh, 24px);
+}
+.card-head { display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 100%; min-width: 0; text-align: center; }
+.card-title {
+  margin: 0;
+  font-family: var(--f-title);
+  font-weight: 700;
+  font-size: clamp(1.5rem, min(7.5vw, 4.6dvh), 2.3rem);
+  line-height: 1.1;
+  color: var(--rosa);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  padding: 0 .15em; /* los trazos de la cursiva salen un poco de la caja */
+}
+.card-msg {
+  margin: 0;
+  max-width: 32ch;
+  font-family: var(--f-hand);
+  font-size: clamp(1.25rem, min(5vw, 3dvh), 1.7rem);
+  line-height: 1.15;
+  text-align: center;
+  color: var(--ciruela-soft);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+/* Piececita de LEGO que sirve de ícono en los botones de la portada y el final */
+.chip {
+  --cu: 16px;
+  display: inline-block;
+  width: calc(var(--n) * var(--cu));
+  height: calc(var(--cu) * 1.2);
+  margin-top: calc(var(--cu) * .25);
+}
+
+/* ---------- Fotos: el hueco mide lo que sobra y las fotos se ajustan a él ---------- */
+.photo-slot { width: 100%; min-height: 0; container: slot / size; }
+.photo-grid { display: grid; width: 100%; height: 100%; gap: clamp(4px, 2cqmin, 12px); }
+.photos-1 { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+.photos-2 { grid-template: minmax(0, 1fr) / repeat(2, minmax(0, 1fr)); }
+.photos-3 { grid-template: minmax(0, 1.2fr) minmax(0, 1fr) / repeat(2, minmax(0, 1fr)); grid-template-areas: "a a" "b c"; }
+.photos-3 > :nth-child(1) { grid-area: a; }
+.photos-3 > :nth-child(2) { grid-area: b; }
+.photos-3 > :nth-child(3) { grid-area: c; }
+.photos-4 { grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr)); }
+/* Si el hueco es más alto que ancho, 2 fotos van una sobre otra */
+@container slot (aspect-ratio < .9) {
+  .photos-2 { grid-template: repeat(2, minmax(0, 1fr)) / minmax(0, 1fr); }
+}
+.photo-cell { min-width: 0; min-height: 0; container-type: size; display: grid; place-items: center; }
+
+/* Polaroid con cinta; escala con su celda (cqmin = lado corto de la celda) */
+.frame {
+  --pp: clamp(4px, 3cqmin, 12px);   /* borde */
+  --pb: clamp(14px, 11cqmin, 44px); /* borde de abajo */
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--pp) var(--pp) var(--pb);
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: var(--shadow-sm);
+  transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--tilt, 0deg));
+}
+.frame img { display: block; width: auto; height: auto; }
+/* Resta borde, cinta e inclinación al espacio de la celda */
+.frame img, .frame .broken {
+  max-width: calc(100cqw - var(--pp) * 2 - clamp(14px, 11cqmin, 44px));
+  max-height: calc(100cqh - var(--pp) - var(--pb) - clamp(12px, 8cqmin, 30px));
+}
+body.vintage .frame img { filter: sepia(.18) saturate(.92) contrast(1.03) brightness(1.03); }
+.tape {
+  position: absolute;
+  top: calc(clamp(8px, 5cqmin, 13px) * -1);
+  left: var(--tape-x, 50%);
+  width: clamp(40px, 26cqmin, 96px);
+  height: clamp(12px, 7cqmin, 26px);
+  transform: translateX(-50%) rotate(var(--tape-rot, -3deg));
+  /* La cinta toma el color del bloque */
+  background: color-mix(in srgb, var(--c, var(--oro)) 50%, transparent);
+  box-shadow: 0 1px 2px rgba(45, 22, 72, .12);
+}
+
+.broken {
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  width: min(340px, calc(100cqw - 34px), calc((100cqh - 70px) * 4 / 3));
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(4px, 4cqmin, 16px);
+  text-align: center;
+  font-family: var(--f-ui);
+  font-size: clamp(.62rem, 4.5cqmin, .9rem);
+  color: var(--ciruela-soft);
+  background: #f1e6ef;
+}
+.broken small { font-size: .85em; }
+.broken.pending { background: #f7f1e6; font-family: var(--f-hand); font-size: clamp(1rem, 7cqmin, 1.5rem); }
+.broken-icon { font-size: clamp(1rem, 12cqmin, 1.8rem); line-height: 1; opacity: .55; }
+/* En celdas chicas solo el ícono; con poco más espacio, sin la explicación */
+@container (max-height: 260px) { .frame .broken small { display: none; } }
+@container (max-height: 170px) or (max-width: 170px) { .frame .broken-text { display: none; } }
+
+/* ---------- Nuestra canción ---------- */
+.song {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 330px);
+  min-width: 0;
+  padding: 8px 12px 8px 8px;
+  border: 1px solid rgba(59, 35, 80, .12);
+  border-radius: var(--r-lg);
+  background: var(--crema);
+  color: var(--ciruela);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+}
+.vinyl {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--crema) 0 5%, var(--c, var(--rosa)) 6% 24%, transparent 25%),
+    repeating-radial-gradient(circle, #2a1e33 0 2px, #3a2c45 2px 4px);
+  animation: spin 5s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.song-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.song-label { font-family: var(--f-hand); font-weight: 700; font-size: 1rem; line-height: 1; color: var(--turquesa); }
+.song-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--f-title);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+.song-artist {
+  font-family: var(--f-hand);
+  font-size: 1.05rem;
+  line-height: 1.1;
+  color: var(--ciruela-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.song-play {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding-left: 2px;
+  border-radius: 50%;
+  background: var(--rosa);
+  color: #fff;
+  font: .8rem var(--f-ui);
+}
+
+/* ---------- Portada y final ---------- */
+.card.cover, .card.finale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2.4dvh, 22px);
+  padding: 28px;
+  text-align: center;
+}
+.cover-label h1, .finale h2 {
+  margin: 0;
+  font-family: var(--f-title);
+  font-weight: 700;
+  font-size: clamp(2.2rem, min(14vw, 8dvh), 4.2rem);
+  line-height: 1;
+  color: var(--rosa);
+  overflow-wrap: anywhere;
+}
+.finale h2 { font-size: clamp(1.9rem, min(10vw, 6.5dvh), 3.2rem); }
+.cover-label p, .finale p {
+  margin: 10px 0 0;
+  font-family: var(--f-hand);
+  font-weight: 700;
+  font-size: clamp(1.35rem, min(6.5vw, 3.8dvh), 1.9rem);
+  line-height: 1.1;
+  color: var(--turquesa);
+}
+.cover-hint { margin: 0; font-size: 1.35rem; line-height: 1.15; color: var(--ciruela-soft); }
+.cover-tip { max-width: 26ch; margin: 0; font: .8rem / 1.4 var(--f-ui); color: var(--ciruela-soft); opacity: .8; }
+
+/* Sombrero vaquero sobre la primera letra del título */
+.hat-letter { position: relative; display: inline-block; }
+.hat {
+  position: absolute;
+  left: 68%;
+  top: -.15em;
+  width: .9em;
+  transform: translateX(-50%) rotate(-10deg);
+  pointer-events: none;
+}
+.hat svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 2px rgba(45, 22, 72, .25)); }
+
+.flourish {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px auto 0;
+  color: var(--oro);
+  font-size: .9rem;
+}
+.flourish::before, .flourish::after {
+  content: "";
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--oro));
+}
+.flourish::after { transform: scaleX(-1); }
+
+.start {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px 12px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--rosa);
+  color: #fff;
+  font: 700 1.5rem / 1 var(--f-hand);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  animation: nudge 2.4s ease-in-out infinite;
+}
+.start .chip { --cu: 14px; margin-top: 4px; }
+.start:focus-visible { outline: 3px solid var(--oro); outline-offset: 3px; }
+@keyframes nudge { 50% { transform: translateY(-3px); } }
+
+/* ---------- Pantallas bajas: se quita lo decorativo antes que achicar la foto ---------- */
+@media (max-height: 700px) {
+  .card-msg { -webkit-line-clamp: 3; }
+  .song { gap: 10px; padding: 6px 10px 6px 6px; }
+  .vinyl { width: 34px; height: 34px; }
+  .song-label { display: none; }
+  .song-title { font-size: 1.1rem; }
+  .song-play { width: 30px; height: 30px; }
+}
+@media (max-height: 620px) {
+  .card-msg { -webkit-line-clamp: 2; font-size: 1.2rem; }
+}
+
+/* Celular en horizontal: foto a la izquierda, texto a la derecha */
+@media (orientation: landscape) and (max-height: 540px) {
+  .card.memory {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-areas: "photo head" "photo msg" "photo song" "photo .";
+    column-gap: 18px;
+    row-gap: 8px;
+    align-items: start;
+    padding: 18px 20px;
+  }
+  .card.memory .photo-slot { grid-area: photo; height: 100%; }
+  .card.memory .card-head { grid-area: head; }
+  .card.memory .card-msg { grid-area: msg; -webkit-line-clamp: 3; }
+  .card.memory .card-title { -webkit-line-clamp: 2; font-size: clamp(1.3rem, 7dvh, 1.9rem); }
+  .card.memory .song { grid-area: song; }
+  .cover-label h1 { font-size: clamp(1.8rem, 11dvh, 3.4rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card.leaving, .vinyl, .start { animation: none; }
+}
+
+/* ---------- Contraseña antes de abrir el álbum ---------- */
+/* Se escribe sobre una línea, como en el papel de la tarjeta */
+.gate-input {
+  width: min(100%, 12ch);
+  padding: 0 4px 2px;
+  border: 0;
+  border-bottom: 2px dashed rgba(122, 92, 142, .45);
+  border-radius: 0;
+  background: transparent;
+  font: 700 clamp(1.7rem, min(8vw, 4.6dvh), 2.2rem) / 1.1 var(--f-hand);
+  color: var(--ciruela);
+  text-align: center;
+  caret-color: var(--rosa);
+  transition: border-color .2s;
+}
+.gate-input::placeholder { color: var(--ciruela-soft); opacity: .45; }
+.gate-input:focus { outline: none; border-bottom-style: solid; border-bottom-color: var(--rosa); }
+.gate-error { min-height: 1.2em; margin: -8px 0 0; font-size: 1.35rem; line-height: 1.15; color: var(--rosa); }
+.gate.shake { animation: shake .4s ease-in-out; }
+@keyframes shake {
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+@media (prefers-reduced-motion: reduce) { .gate.shake { animation: none; } }
+
+/* ---------- Foto en pantalla completa ---------- */
+.frame.zoomable { cursor: zoom-in; }
+.frame.zoomable:focus-visible { outline: 3px solid var(--oro); outline-offset: 4px; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  background: rgba(20, 12, 30, .94);
+  animation: lb-in .25s ease-out both;
+  touch-action: none;
+}
+.lightbox.leaving { animation: lb-out .2s ease-in forwards; pointer-events: none; }
+@keyframes lb-in { from { opacity: 0; } }
+@keyframes lb-out { to { opacity: 0; } }
+.lb-photo {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  cursor: zoom-out;
+}
+.lb-photo img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100dvh - 32px);
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+  cursor: default;
+  animation: lb-photo .3s cubic-bezier(.2, .8, .3, 1) both;
+}
+@keyframes lb-photo { from { opacity: 0; transform: scale(.96); } }
+body.vintage .lb-photo img { filter: sepia(.18) saturate(.92) contrast(1.03) brightness(1.03); }
+.lb-photo .broken { width: min(340px, 90vw); }
+.lb-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0 0 4px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  font: 2rem / 1 var(--f-ui);
+  cursor: pointer;
+}
+.lb-btn:hover { background: rgba(255, 255, 255, .26); }
+.lb-btn:focus-visible { outline: 3px solid var(--oro); outline-offset: 2px; }
+.lb-close { top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); }
+.lb-prev, .lb-next { top: 50%; transform: translateY(-50%); }
+.lb-prev { left: max(12px, env(safe-area-inset-left)); }
+.lb-next { right: max(12px, env(safe-area-inset-right)); }
+.lb-count {
+  position: absolute;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  font: .9rem var(--f-ui);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lightbox, .lightbox.leaving, .lb-photo img { animation: none; }
+}

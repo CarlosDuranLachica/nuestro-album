@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f2f74">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Nuestro álbum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/sky.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/card.css">
+<link rel="stylesheet" href="css/wall.css">
+<link rel="stylesheet" href="css/panel.css">
+
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<main class="stage is-cover" id="stage">
+  <header class="top" id="top">
+    <h1 class="top-title" id="topTitle"></h1>
+  </header>
+
+  <!-- Aquí aparece el recuerdo del bloque que va cayendo -->
+  <section class="card-slot" id="cardSlot" aria-live="polite"></section>
+
+  <!-- El muro: cada bloque es un recuerdo -->
+  <div class="wall-area" id="wallArea">
+    <div class="wall" id="wall" role="group" aria-label="Muro de recuerdos"></div>
+    <div class="plate" aria-hidden="true"></div>
+  </div>
+
+</main>
+
+<!-- El editor solo aparece al abrir la página con ?editar en la URL. -->
+<button class="fab" id="openPanel" type="button" aria-label="Editar álbum" title="Editar álbum" hidden>✎</button>
+<div class="backdrop" id="backdrop"></div>
+
+<aside class="panel" id="panel" aria-label="Editar álbum" inert hidden>
+  <header>
+    <h2>Editar álbum</h2>
+    <button class="icon-btn" id="closePanel" type="button" aria-label="Cerrar">×</button>
+  </header>
+  <div class="panel-body">
+    <section>
+      <h3>Portada</h3>
+      <label>Título del álbum<input id="albumTitle" placeholder="Nuestro álbum"></label>
+      <label>Subtítulo<input id="albumSub" placeholder="Ej. Verano 2026"></label>
+      <label class="check"><input type="checkbox" id="vintage"> Efecto vintage en las fotos</label>
+    </section>
+
+    <section>
+      <h3 id="formTitle">Agregar recuerdo</h3>
+      <form id="pageForm">
+        <label>Título<input name="titulo" required placeholder="Ej. Nuestro primer viaje"></label>
+        <fieldset>
+          <legend>Fotos (hasta 4)</legend>
+          <div class="upload-row">
+            <label class="btn file-btn">📷 Subir fotos<input type="file" id="uploadFotos" accept="image/*" multiple hidden></label>
+            <span class="upload-status" id="uploadStatus" aria-live="polite"></span>
+          </div>
+          <p class="note">Se reducen y optimizan solas. También puedes pegar un enlace de Drive o una ruta como fotos/20260530_195917.jpg.</p>
+          <label>Foto 1<input name="foto0" placeholder="https://drive.google.com/file/d/…/view"></label>
+          <label>Foto 2 (opcional)<input name="foto1" placeholder="Enlace de Drive o fotos/…"></label>
+          <label>Foto 3 (opcional)<input name="foto2" placeholder="Enlace de Drive o fotos/…"></label>
+          <label>Foto 4 (opcional)<input name="foto3" placeholder="Enlace de Drive o fotos/…"></label>
+          <div class="preview" id="preview"></div>
+        </fieldset>
+        <label>Descripción<textarea name="mensaje" rows="3" placeholder="Escribe algo bonito…"></textarea></label>
+        <fieldset>
+          <legend>Nuestra canción (opcional)</legend>
+          <label>Canción<input name="cancion" placeholder="Nombre de la canción"></label>
+          <label>Artista<input name="artista" placeholder="Ej. El Coyote y su Banda Tierra Santa"></label>
+          <label>Enlace de YouTube o Spotify<input name="enlace" type="url" placeholder="Si lo dejas vacío, se busca en YouTube"></label>
+        </fieldset>
+        <div class="row">
+          <button type="submit" class="btn primary" id="submitBtn">Agregar</button>
+          <button type="button" class="btn" id="cancelEdit" hidden>Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h3>Recuerdos (bloques del muro)</h3>
+      <ol class="page-list" id="pageList"></ol>
+    </section>
+
+    <section>
+      <h3>Guardar y compartir</h3>
+      <p class="note" id="saveNote">Los cambios se guardan en este navegador. Para publicarlos, descarga <b>album.json</b> y reemplaza el archivo <b>data/album.json</b> del proyecto.</p>
+      <p class="note" id="uploadsNote" hidden>Las fotos que subiste solo están en este navegador: descárgalas y cópialas a la carpeta <b>fotos/</b> del proyecto.</p>
+      <div class="row">
+        <button class="btn primary" id="download" type="button">Descargar album.json</button>
+        <button class="btn" id="downloadFotos" type="button" hidden>Descargar fotos subidas</button>
+        <label class="btn file-btn">Importar .json<input type="file" id="importFile" accept="application/json,.json" hidden></label>
+        <button class="btn" id="discard" type="button">Descartar cambios locales</button>
+      </div>
+    </section>
+
+    <details>
+      <summary>¿Cómo obtengo el enlace de una foto en Drive?</summary>
+      <ol>
+        <li>En Google Drive, clic derecho en la foto → <b>Compartir</b>.</li>
+        <li>En “Acceso general” elige <b>Cualquier persona con el enlace</b>.</li>
+        <li>Clic en <b>Copiar enlace</b> y pégalo aquí.</li>
+      </ol>
+      <p class="note">Las fotos se muestran directo desde tu Drive: si dejas de compartirlas o las borras, desaparecen del álbum. Los enlaces de carpeta no funcionan; usa el de cada foto.</p>
+    </details>
+  </div>
+</aside>
+</body>
+</html>

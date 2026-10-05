@@ -1,0 +1,280 @@
+{
+  "id": "mi-album",
+  "titulo": "Nuestro álbum",
+  "subtitulo": "Recuerdos",
+  "vintage": true,
+  "paginas": [
+    {
+      "titulo": "4 de abril",
+      "fotos": [],
+      "mensaje": "El día en que empezó todo.\nLa foto todavía me la debes."
+    },
+    {
+      "titulo": "30 de mayo",
+      "fotos": [
+        "fotos/20260530_195917.jpg"
+      ],
+      "mensaje": "Una noche de folclor:\npapel picado, baile y sonrisas."
+    },
+    {
+      "titulo": "30 de mayo",
+      "fotos": [
+        "fotos/20260530_235816.jpg",
+        "fotos/20260531_000144.jpg",
+        "fotos/20260531_000410.jpg"
+      ],
+      "mensaje": "Tú, esa pared de flores\ny una noche que no quería que se acabara."
+    },
+    {
+      "titulo": "3 de junio",
+      "fotos": [
+        "fotos/20260603_222848.jpg",
+        "fotos/20260603_222951.jpg",
+        "fotos/20260603_223428.jpg"
+      ],
+      "mensaje": "Lucecitas, un brindis\ny tu sonrisa de cerca."
+    },
+    {
+      "titulo": "6 de junio",
+      "fotos": [
+        "fotos/20260607_000436.jpg",
+        "fotos/20260607_000812.jpg",
+        "fotos/20260607_001620.jpg"
+      ],
+      "mensaje": "Rosas rojas para la más bonita,\naunque ninguna se te compara."
+    },
+    {
+      "titulo": "6 de junio",
+      "fotos": [
+        "fotos/20260607_002257.jpg",
+        "fotos/20260607_002307.jpg",
+        "fotos/20260607_002422.jpg"
+      ],
+      "mensaje": "Sonreías tanto\nque hasta las flores se veían opacas."
+    },
+    {
+      "titulo": "7 de junio",
+      "fotos": [
+        "fotos/20260607_194717.jpg"
+      ],
+      "mensaje": "Te robé esta foto\ny no me arrepiento."
+    },
+    {
+      "titulo": "12 de junio",
+      "fotos": [
+        "fotos/20260613_000425.jpg"
+      ],
+      "mensaje": "Así de bonita,\nhasta en una noche cualquiera."
+    },
+    {
+      "titulo": "18 de junio",
+      "fotos": [
+        "fotos/20260618_211212.jpg",
+        "fotos/20260618_214634.jpg",
+        "fotos/20260618_215749.jpg",
+        "fotos/20260618_222337.jpg"
+      ],
+      "mensaje": "Hamburguesa, la verde puesta\ny tú a mi lado: noche perfecta."
+    },
+    {
+      "titulo": "24 de junio",
+      "fotos": [
+        "fotos/20260624_201730.jpg",
+        "fotos/20260624_202514.jpg"
+      ],
+      "mensaje": "Gritando goles juntos.\nContigo hasta el futbol es mejor."
+    },
+    {
+      "titulo": "28 de junio",
+      "fotos": [
+        "fotos/20260628_221830.jpg",
+        "fotos/20260628_221925.jpg"
+      ],
+      "mensaje": "Noches de verano,\ntú, yo y nada de prisa."
+    },
+    {
+      "titulo": "30 de junio",
+      "fotos": [
+        "fotos/20260630_183404.jpg",
+        "fotos/20260630_210551.jpg",
+        "fotos/20260630_210706.jpg"
+      ],
+      "mensaje": "La Patrona y su afición.\n¡Arriba México!"
+    },
+    {
+      "titulo": "4 de julio",
+      "fotos": [
+        "fotos/20260704_203228.jpg",
+        "fotos/20260704_203454.jpg",
+        "fotos/20260704_203506.jpg"
+      ],
+      "mensaje": "Caminando bajo las luces,\nhacia donde tú vayas."
+    },
+    {
+      "titulo": "4 de julio",
+      "fotos": [
+        "fotos/20260704_211220.jpg",
+        "fotos/20260704_230628.jpg"
+      ],
+      "mensaje": "Entre música, luces y fiesta,\nyo solo te veía a ti."
+    },
+    {
+      "titulo": "5 de julio",
+      "fotos": [
+        "fotos/20260705_175501.jpg"
+      ],
+      "mensaje": "Con sombrero y la camiseta puesta,\nlista para cualquier partido."
+    },
+    {
+      "titulo": "11 de julio",
+      "fotos": [
+        "fotos/20260711_214804.jpg",
+        "fotos/20260711_220850.jpg"
+      ],
+      "mensaje": "Noches de feria,\nde antojos y paseos contigo."
+    },
+    {
+      "titulo": "12 de julio",
+      "fotos": [
+        "fotos/20260712_181646.jpg",
+        "fotos/20260712_181718.jpg",
+        "fotos/20260712_181747.jpg"
+      ],
+      "mensaje": "Sol, mar y sombrero:\nel verano se ve mejor contigo."
+    },
+    {
+      "titulo": "12 de julio",
+      "fotos": [
+        "fotos/20260712_181801.jpg",
+        "fotos/20260712_181823.jpg",
+        "fotos/20260712_192148.jpg"
+      ],
+      "mensaje": "Y el atardecer en el mar\nnos cerró el día."
+    },
+    {
+      "titulo": "19 de julio",
+      "fotos": [
+        "fotos/20260719_124052.jpg",
+        "fotos/20260719_133054.jpg"
+      ],
+      "mensaje": "Desayunos que saben a pueblo,\na colores y a nosotros."
+    },
+    {
+      "titulo": "19 de julio",
+      "fotos": [
+        "fotos/20260719_190804.jpg"
+      ],
+      "mensaje": "El sol se iba\ny yo solo quería quedarme así contigo."
+    },
+    {
+      "titulo": "1 de agosto",
+      "fotos": [
+        "fotos/20260801_203329.jpg"
+      ],
+      "mensaje": "Noche de puerto,\nbrisa de mar y tu vestido al viento."
+    },
+    {
+      "titulo": "9 de agosto",
+      "fotos": [
+        "fotos/20260809_194423.jpg",
+        "fotos/20260809_194645.jpg"
+      ],
+      "mensaje": "Paseos de noche\ncon nuestro compañero de cuatro patas."
+    },
+    {
+      "titulo": "12 de agosto",
+      "fotos": [
+        "fotos/20260812_202049.jpg",
+        "fotos/20260812_202320.jpg",
+        "fotos/20260812_211643.jpg"
+      ],
+      "mensaje": "Él te quiere mucho,\npero yo te quiero más."
+    },
+    {
+      "titulo": "22 de agosto",
+      "fotos": [
+        "fotos/20260822_184721.jpg",
+        "fotos/20260822_185043.jpg"
+      ],
+      "mensaje": "Sombreros de vaquero\ny ganas de reír contigo."
+    },
+    {
+      "titulo": "15 de septiembre",
+      "fotos": [
+        "fotos/20260915_202540.jpg",
+        "fotos/20260915_202645.jpg",
+        "fotos/20260915_203958.jpg"
+      ],
+      "mensaje": "Noche de fiesta patria,\ny tú la más mexicana de todas."
+    },
+    {
+      "titulo": "15 de septiembre",
+      "fotos": [
+        "fotos/20260915_225747.jpg",
+        "fotos/20260915_225804.jpg"
+      ],
+      "mensaje": "El Grito lo dimos juntos,\ncon el corazón tricolor."
+    },
+    {
+      "titulo": "19 de septiembre",
+      "fotos": [
+        "fotos/20260919_203427.jpg",
+        "fotos/20260919_204536.jpg",
+        "fotos/20260919_232105.jpg"
+      ],
+      "mensaje": "Con tu vestido de fiesta mexicana\nme robaste el aliento otra vez."
+    },
+    {
+      "titulo": "19 de septiembre",
+      "fotos": [
+        "fotos/20260919_233938.jpg",
+        "fotos/20260920_002225.jpg",
+        "fotos/20260920_002622.jpg"
+      ],
+      "mensaje": "¡Viva México!\nY que viva tu sonrisa."
+    },
+    {
+      "titulo": "19 de septiembre",
+      "fotos": [
+        "fotos/20260920_003640.jpg",
+        "fotos/20260920_003650.jpg",
+        "fotos/20260920_004504.jpg"
+      ],
+      "mensaje": "Dulces sabores de México\ny el más dulce de todos: tú."
+    },
+    {
+      "titulo": "21 de septiembre",
+      "fotos": [
+        "fotos/20260921_195309.jpg",
+        "fotos/20260921_195341.jpg",
+        "fotos/20260921_195353.jpg"
+      ],
+      "mensaje": "21 de septiembre:\nflores amarillas para mi persona favorita."
+    },
+    {
+      "titulo": "21 de septiembre",
+      "fotos": [
+        "fotos/20260921_195437.jpg",
+        "fotos/20260921_195757.jpg",
+        "fotos/20260921_205205.jpg"
+      ],
+      "mensaje": "Flores amarillas\ny una sonrisa que vale todo el año."
+    },
+    {
+      "titulo": "26 de septiembre",
+      "fotos": [
+        "fotos/20260926_205657.jpg",
+        "fotos/20260926_205342.jpg"
+      ],
+      "mensaje": "Una noche cualquiera\nque se volvió especial porque estabas tú."
+    },
+    {
+      "titulo": "26 de septiembre",
+      "fotos": [
+        "fotos/20260926_205203.jpg",
+        "fotos/20260926_205311.jpg"
+      ],
+      "mensaje": "Una selfie, un beso\ny las ganas de que el tiempo se detenga."
+    }
+  ]
+}

@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f2f74">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Nuestro álbum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     Sistema de diseño
+     - 2 fuentes: títulos (Dancing Script) y todo lo escrito a mano (Caveat)
+     - 4 acentos: rosa mexicano, turquesa, oro y ciruela (tinta)
+     - 2 radios y 2 sombras
+     ========================================================= */
+  :root {
+    --f-title: "Dancing Script", cursive;
+    --f-hand: "Caveat", cursive;
+
+    --rosa: #d6336c;
+    --rosa-tint: #f6c7d6;
+    --turquesa: #1c9c98;
+    --turquesa-tint: #bfe3df;
+    --oro: #e3a33a;
+    --oro-tint: #f8dfae;
+    --ciruela: #3b2350;
+    --ciruela-soft: #7a5c8e;
+    --crema: #fffaf2;
+    --papel: #fdf5e8;
+
+    --r-lg: 14px;
+    --r-sm: 6px;
+    --shadow: 0 18px 44px rgba(45, 22, 72, .38), 0 2px 6px rgba(45, 22, 72, .12);
+    --shadow-sm: 0 6px 16px rgba(45, 22, 72, .22);
+
+    /* Aliases usados por el panel de edición */
+    --ink: var(--ciruela);
+    --ink-soft: var(--ciruela-soft);
+    --accent: var(--rosa);
+    --panel-bg: #fffaf6;
+    --panel-ink: #3b2350;
+    --panel-soft: #7a5c8e;
+    --line: #eadbe6;
+    --field: #ffffff;
+
+    --sparkle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0C55 35 65 45 100 50 65 55 55 65 50 100 45 65 35 55 0 50 35 45 45 35 50 0z'/%3E%3C/svg%3E");
+    --heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90C22 70 4 53 4 31A23 23 0 0 1 50 20a23 23 0 0 1 46 11c0 22-18 39-46 59z'/%3E%3C/svg%3E");
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --panel-bg: #241a30;
+      --panel-ink: #f3e8f5;
+      --panel-soft: #b9a3c9;
+      --line: #433452;
+      --field: #1a1224;
+    }
+  }
+  :root[data-theme="dark"] {
+    --panel-bg: #241a30;
+    --panel-ink: #f3e8f5;
+    --panel-soft: #b9a3c9;
+    --line: #433452;
+    --field: #1a1224;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body {
+    min-height: 100dvh;
+    background-color: #6d5bb3;
+    background-image:
+      radial-gradient(ellipse at 50% 108%, rgba(255, 222, 170, .85), transparent 45%),
+      linear-gradient(180deg, #2f2f74 0%, #62539f 28%, #b67fb0 55%, #f0a592 80%, #f8cfa0 100%);
+    background-attachment: fixed;
+    font-family: var(--f-hand);
+    color: var(--ciruela);
+    overflow-x: hidden;
+  }
+
+  /* ---------- Cielo: nubes, estrellas y luciérnagas ---------- */
+  .sky { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .cloud {
+    position: absolute;
+    left: 0;
+    width: var(--w);
+    height: calc(var(--w) * .38);
+    background:
+      radial-gradient(circle at 28% 62%, #fff 0 20%, transparent 21%),
+      radial-gradient(circle at 50% 42%, #fff 0 26%, transparent 27%),
+      radial-gradient(circle at 72% 60%, #fff 0 19%, transparent 20%),
+      radial-gradient(ellipse at 50% 78%, #fff 0 44%, transparent 45%);
+    opacity: var(--o);
+    filter: blur(1.5px);
+    animation: drift var(--d) linear var(--delay) infinite;
+  }
+  @keyframes drift { from { transform: translateX(-40vw); } to { transform: translateX(120vw); } }
+  .star {
+    position: absolute;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px 1px rgba(255, 255, 255, .8);
+    animation: twinkle var(--d) ease-in-out var(--delay) infinite;
+  }
+  @keyframes twinkle { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+  .firefly {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff4c2;
+    box-shadow: 0 0 10px 4px rgba(255, 214, 110, .65);
+    animation: wander var(--d) ease-in-out var(--delay) infinite alternate, twinkle 2.6s ease-in-out var(--delay) infinite;
+  }
+  @keyframes wander {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(var(--x), var(--y)); }
+    100% { transform: translate(calc(var(--x) * -.6), calc(var(--y) * 1.4)); }
+  }
+
+  /* Corazones y estrellitas al tocar la foto */
+  .burst {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    background: var(--c);
+    -webkit-mask: var(--m) center / contain no-repeat;
+    mask: var(--m) center / contain no-repeat;
+    pointer-events: none;
+    z-index: 8;
+    animation: pop .9s ease-out forwards;
+  }
+  @keyframes pop {
+    0% { transform: translate(0, 0) scale(.3); opacity: 1; }
+    100% { transform: translate(var(--x), var(--y)) scale(1.15) rotate(var(--r)); opacity: 0; }
+  }
+
+  /* ---------- Escenario ---------- */
+  .stage {
+    position: relative;
+    z-index: 1;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+             calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .page {
+    position: relative;
+    width: min(100%, 540px);
+    height: min(calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)), 820px);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background-color: var(--papel);
+    /* Grano de papel muy suave */
+    background-image:
+      radial-gradient(circle at 50% 40%, rgba(255, 255, 255, .7), transparent 65%),
+      repeating-linear-gradient(0deg, rgba(59, 35, 80, .018) 0 1px, transparent 1px 3px);
+    box-shadow: var(--shadow);
+    transform-origin: left center;
+  }
+
+  /* ---------- Portada ---------- */
+  .page.cover {
+    display: grid;
+    place-items: center;
+    padding: 96px 32px calc(30% + 36px);
+    overflow: visible;
+  }
+  /* Doble filete, como el reverso de una carta de lotería */
+  /* Sin línea: el mismo halo rosado suave de las hojas */
+  .page.cover::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(214, 51, 108, .18), inset 0 0 38px rgba(214, 120, 110, .16);
+    pointer-events: none;
+  }
+  .cover-inner { position: relative; z-index: 1; text-align: center; }
+  .cover-label h1 {
+    margin: 0;
+    font-family: var(--f-title);
+    font-weight: 700;
+    font-size: clamp(2.2rem, min(15vw, 8.5dvh), 4.4rem);
+    line-height: 1;
+    color: var(--rosa);
+    overflow-wrap: anywhere;
+  }
+  /* Sombrero vaquero sobre la primera letra del título */
+  .hat-letter { position: relative; display: inline-block; }
+  .hat {
+    position: absolute;
+    left: 68%;
+    top: -.15em;
+    width: .9em;
+    transform: translateX(-50%) rotate(-10deg);
+    pointer-events: none;
+  }
+  .hat svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 2px rgba(45, 22, 72, .25)); }
+  .cover-label p {
+    margin: 10px 0 0;
+    font-family: var(--f-hand);
+    font-weight: 700;
+    font-size: clamp(1.4rem, min(7vw, 4dvh), 1.9rem);
+    line-height: 1.1;
+    color: var(--turquesa);
+  }
+  .flourish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 18px auto 0;
+    color: var(--oro);
+    font-size: .9rem;
+  }
+  .flourish::before, .flourish::after {
+    content: "";
+    width: 48px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--oro));
+  }
+  .flourish::after { transform: scaleX(-1); }
+  .cover-hint {
+    margin: clamp(14px, 4dvh, 40px) 0 0;
+    font-family: var(--f-hand);
+    font-size: 1.45rem;
+    color: var(--ciruela-soft);
+    animation: nudge 2.4s ease-in-out infinite;
+  }
+  @keyframes nudge { 50% { transform: translateX(6px); } }
+
+
+  /* ---------- Muro de LEGO en la portada ---------- */
+  .lego-wall {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column-reverse; /* la primera fila del DOM es la de abajo */
+    z-index: 1;
+    pointer-events: none;
+  }
+  .lego-row { display: flex; aspect-ratio: 10; } /* 12 botones de ancho, bloque de 1.2 de alto */
+  .lego-row + .lego-row { margin-bottom: -2px; } /* cada fila se encaja un poco sobre la de abajo */
+  .brick {
+    position: relative;
+    flex: 0 0 calc(var(--n) / var(--cols, 12) * 100%);
+    border-radius: 2px;
+    background: var(--c);
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, .12),
+      inset 0 2px 0 rgba(255, 255, 255, .22),
+      inset 0 -2px 0 rgba(0, 0, 0, .1);
+    animation: brick-drop 1s ease-in var(--delay) both;
+  }
+  /* Botones de arriba */
+  .brick::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -17%;
+    height: 19%;
+    background:
+      linear-gradient(90deg, transparent 27%, rgba(255, 255, 255, .35) 27% 35%, transparent 35%) 0 0 / calc(100% / var(--n)) 100% repeat-x,
+      linear-gradient(90deg, transparent 20%, var(--c) 20% 68%, color-mix(in srgb, var(--c), #000 18%) 68% 80%, transparent 80%) 0 0 / calc(100% / var(--n)) 100% repeat-x;
+    border-radius: 3px 3px 0 0;
+  }
+  @keyframes brick-drop {
+    0% { transform: translateY(-110vh) rotate(var(--rot)); }
+    70% { transform: translateY(0) rotate(0); }
+    82% { transform: translateY(-10%); }
+    100% { transform: none; }
+  }
+
+  /* Pie de cada hoja: media pirámide de LEGO en la esquina, con el número de página */
+  .sheet-foot {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column-reverse; /* la primera fila del DOM es la de abajo */
+    align-items: flex-end;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .sheet-foot .lego-row {
+    width: calc(var(--u) * var(--cols));
+    height: calc(var(--u) * 1.2);
+    aspect-ratio: auto;
+  }
+  .sheet-foot .brick { animation-duration: .6s; }
+  .sheet-foot .brick.num {
+    display: grid;
+    place-items: center;
+    /* Texto funcional muy chico: sans gruesa y legible, como la impresión de una pieza real */
+    font: 800 calc(var(--u) * .56) / 1 ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--crema);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .25);
+  }
+
+  /* ---------- Hoja ---------- */
+  .page.sheet {
+    --u: clamp(15px, 4.2vw, 20px); /* ancho de un botón de LEGO del pie */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    justify-items: center;
+    gap: clamp(6px, 1.6dvh, 18px);
+    /* Arriba: papel picado (≈10% del ancho). Abajo: la pirámide (3 escalones). */
+    padding: calc(34px + 9%) 30px calc(33px + var(--u) * 3.8);
+  }
+  /* El hueco de las fotos: mide lo que sobra y las fotos se ajustan a él */
+  .photo-slot {
+    width: 100%;
+    min-height: 0;
+    container: slot / size;
+  }
+  /* 1 a 4 fotos. Cada celda es su propio contenedor: la polaroid se ajusta a su celda. */
+  .photo-grid {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    gap: clamp(4px, 2cqmin, 12px);
+  }
+  .photos-1 { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+  .photos-2 { grid-template: minmax(0, 1fr) / repeat(2, minmax(0, 1fr)); }
+  .photos-3 { grid-template: minmax(0, 1.2fr) minmax(0, 1fr) / repeat(2, minmax(0, 1fr)); grid-template-areas: "a a" "b c"; }
+  .photos-3 > :nth-child(1) { grid-area: a; }
+  .photos-3 > :nth-child(2) { grid-area: b; }
+  .photos-3 > :nth-child(3) { grid-area: c; }
+  .photos-4 { grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr)); }
+  /* Si el hueco es más alto que ancho, 2 fotos van una sobre otra */
+  @container slot (aspect-ratio < .9) {
+    .photos-2 { grid-template: repeat(2, minmax(0, 1fr)) / minmax(0, 1fr); }
+  }
+  .photo-cell {
+    min-width: 0;
+    min-height: 0;
+    container-type: size;
+    display: grid;
+    place-items: center;
+  }
+  /* Hojas: sin línea, solo un halo rosado suave en la orilla (igual que la portada) */
+  .page.sheet::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(214, 51, 108, .18), inset 0 0 38px rgba(214, 120, 110, .16);
+    pointer-events: none;
+  }
+  /* Sombra del lomo */
+  .page.sheet::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 22px;
+    background: linear-gradient(90deg, rgba(59, 35, 80, .12), transparent);
+    pointer-events: none;
+  }
+  .p-head { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; max-width: 100%; min-width: 0; }
+  .p-head .flourish { margin-top: 8px; }
+  .chapter {
+    margin: 0;
+    font-family: var(--f-hand);
+    font-weight: 700;
+    font-size: 1.3rem;
+    line-height: 1.1;
+    color: var(--turquesa);
+  }
+  .chapter::before, .chapter::after { content: "✦"; margin: 0 .5em; font-size: .6em; vertical-align: .15em; color: var(--oro); }
+  .p-title {
+    margin: 0;
+    font-family: var(--f-title);
+    font-weight: 700;
+    font-size: clamp(1.6rem, min(8vw, 5dvh), 2.4rem);
+    line-height: 1.1;
+    color: var(--rosa);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    padding: 0 .15em; /* los trazos de la cursiva salen un poco de la caja */
+  }
+  .p-msg {
+    margin: 0;
+    max-width: 30ch;
+    font-family: var(--f-hand);
+    font-size: clamp(1.3rem, min(5vw, 3.2dvh), 1.75rem);
+    line-height: 1.15;
+    text-align: center;
+    color: var(--ciruela-soft);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+  }
+
+  /* ---------- Papel picado ---------- */
+  .picado { position: absolute; top: 10px; left: 12px; right: 12px; pointer-events: none; z-index: 2; }
+  .picado svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .page .picado { top: 12px; left: 14px; right: 14px; }
+  .picado .flag {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+    animation: sway 3.2s ease-in-out var(--delay) infinite alternate;
+  }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+
+  /* ---------- Marcos ---------- */
+  .frame {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    max-width: 100%;
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--tilt, 0deg));
+  }
+  .frame img {
+    display: block;
+    width: auto;
+    height: auto;
+  }
+  body.vintage .frame img { filter: sepia(.18) saturate(.92) contrast(1.03) brightness(1.03); }
+
+  /* La polaroid escala con su celda (cqmin = lado corto de la celda) */
+  .frame.polaroid {
+    --pp: clamp(4px, 3cqmin, 12px);   /* borde */
+    --pb: clamp(14px, 11cqmin, 44px); /* borde de abajo */
+    padding: var(--pp) var(--pp) var(--pb);
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: var(--shadow-sm);
+  }
+  /* Resta borde, cinta e inclinación al espacio de la celda */
+  .frame.polaroid img, .frame.polaroid .broken {
+    max-width: calc(100cqw - var(--pp) * 2 - clamp(14px, 11cqmin, 44px));
+    max-height: calc(100cqh - var(--pp) - var(--pb) - clamp(12px, 8cqmin, 30px));
+  }
+  .tape {
+    position: absolute;
+    top: calc(clamp(8px, 5cqmin, 13px) * -1);
+    left: var(--tape-x, 50%);
+    width: clamp(40px, 26cqmin, 96px);
+    height: clamp(12px, 7cqmin, 26px);
+    transform: translateX(-50%) rotate(var(--tape-rot, -3deg));
+    background: rgba(227, 163, 58, .5);
+    box-shadow: 0 1px 2px rgba(45, 22, 72, .12);
+  }
+
+  .broken {
+    display: grid;
+    place-content: center;
+    gap: 6px;
+    width: min(340px, calc(100cqw - 34px), calc((100cqh - 70px) * 4 / 3));
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+    overflow: hidden;
+    padding: clamp(4px, 4cqmin, 16px);
+    text-align: center;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: clamp(.62rem, 4.5cqmin, .9rem);
+    color: var(--ciruela-soft);
+    background: #f1e6ef;
+  }
+  .broken small { font-size: .85em; }
+  .broken-icon { font-size: clamp(1rem, 12cqmin, 1.8rem); line-height: 1; opacity: .55; }
+  /* En celdas chicas solo el ícono; con poco más espacio, sin la explicación */
+  @container (max-height: 260px) { .frame .broken small { display: none; } }
+  @container (max-height: 170px) or (max-width: 170px) { .frame .broken-text { display: none; } }
+
+  /* ---------- Nuestra canción: tarjeta de papel ---------- */
+  .song {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: min(100%, 330px);
+    min-width: 0;
+    padding: 8px 12px 8px 8px;
+    border: 1px solid rgba(59, 35, 80, .12);
+    border-radius: var(--r-lg);
+    background: var(--crema);
+    color: var(--ciruela);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .vinyl {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--crema) 0 5%, var(--rosa) 6% 24%, transparent 25%),
+      repeating-radial-gradient(circle, #2a1e33 0 2px, #3a2c45 2px 4px);
+    animation: spin 5s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .song-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .song-label {
+    font-family: var(--f-hand);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--turquesa);
+  }
+  .song-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .song-title { font-family: var(--f-title); font-weight: 700; font-size: 1.3rem; line-height: 1.15; }
+  .song-artist {
+    font-family: var(--f-hand);
+    font-size: 1.05rem;
+    line-height: 1.1;
+    color: var(--ciruela-soft);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .song-play {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding-left: 2px;
+    border-radius: 50%;
+    background: var(--rosa);
+    color: #fff;
+    font: .8rem system-ui, sans-serif;
+  }
+
+  .panel fieldset { margin: 0 0 12px; padding: 10px 12px 2px; border: 1px solid var(--line); border-radius: 10px; }
+  .panel legend { padding: 0 6px; font-weight: 500; }
+
+  /* ---------- Controles (solo modo edición) ---------- */
+  .fab[hidden], .panel[hidden] { display: none; }
+  .fab {
+    position: fixed;
+    right: calc(20px + env(safe-area-inset-right));
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: 56px;
+    height: 56px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    z-index: 5;
+  }
+
+  /* ---------- Animación de página ---------- */
+  .out-next { animation: out-next .38s ease-in forwards; }
+  .in-next  { animation: in-next .38s ease-out; }
+  .out-prev { animation: out-prev .32s ease-in forwards; }
+  .in-prev  { animation: in-prev .38s ease-out; }
+  @keyframes out-next { to { transform: perspective(1600px) rotateY(-75deg); opacity: 0; } }
+  @keyframes in-next { from { transform: perspective(1600px) translateX(14px); opacity: 0; } }
+  @keyframes out-prev { to { transform: perspective(1600px) translateX(14px); opacity: 0; } }
+  @keyframes in-prev { from { transform: perspective(1600px) rotateY(-75deg); opacity: 0; } }
+
+  /* ---------- Panel de edición ---------- */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+    z-index: 9;
+  }
+  .panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 100%);
+    display: flex;
+    flex-direction: column;
+    background: var(--panel-bg);
+    color: var(--panel-ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    z-index: 10;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, .35);
+  }
+  body.panel-open .panel { transform: none; }
+  body.panel-open .backdrop { opacity: 1; pointer-events: auto; }
+  .panel header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel header h2 { margin: 0; font-size: 1.1rem; }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+  .icon-btn:hover { background: rgba(127, 100, 70, .15); }
+  .panel-body { overflow-y: auto; padding: 8px 20px 32px; }
+  .panel section { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .panel h3 {
+    margin: 0 0 12px;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--panel-soft);
+  }
+  .panel label { display: block; margin-bottom: 12px; font-weight: 500; }
+  .panel input:not([type="checkbox"]), .panel textarea, .panel select {
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    padding: 9px 11px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--field);
+    color: inherit;
+    font: inherit;
+    font-weight: normal;
+  }
+  .panel textarea { resize: vertical; }
+  .panel label.check { display: flex; align-items: center; gap: 8px; font-weight: normal; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .btn.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .preview { margin: -4px 0 12px; font-size: .85rem; color: var(--panel-soft); }
+  .preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+  .preview:empty { display: none; }
+  .preview > p { grid-column: 1 / -1; margin: 0; }
+  .preview img { display: block; width: 100%; height: 84px; object-fit: cover; border-radius: 6px; }
+  .preview .broken { width: 100%; height: 84px; aspect-ratio: auto; border-radius: 6px; }
+  .note { margin: 0 0 12px; color: var(--panel-soft); line-height: 1.45; }
+
+  .page-list { list-style: none; margin: 0; padding: 0; }
+  .page-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .page-list li + li { border-top: 1px dashed var(--line); }
+  .page-list .empty { color: var(--panel-soft); }
+  .thumb {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--field);
+    cursor: pointer;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb .broken { width: 100%; height: 100%; aspect-ratio: auto; padding: 0; }
+  .li-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .li-actions { display: flex; }
+  .li-actions button {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+  .li-actions button:hover:not(:disabled) { background: rgba(127, 100, 70, .15); }
+  .li-actions button:disabled { opacity: .3; cursor: default; }
+  .panel details { padding: 14px 0; line-height: 1.5; }
+  .panel summary { cursor: pointer; font-weight: 500; }
+  .panel details ol { padding-left: 20px; }
+
+  .demo-badge {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255, 250, 242, .9);
+    color: var(--ciruela);
+    box-shadow: var(--shadow-sm);
+    font: 600 .75rem system-ui, -apple-system, "Segoe UI", sans-serif;
+    white-space: nowrap;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* Pantallas bajas: se quita lo decorativo antes que achicar la foto */
+  @media (max-height: 700px) {
+    .p-head .flourish { display: none; }
+    .p-msg { -webkit-line-clamp: 3; }
+    .chapter { font-size: 1.15rem; }
+    /* Tarjeta de canción compacta para dejarle espacio a la foto */
+    .song { gap: 10px; padding: 6px 10px 6px 6px; }
+    .vinyl { width: 36px; height: 36px; }
+    .song-label { display: none; }
+    .song-title { font-size: 1.15rem; }
+    .song-artist { -webkit-line-clamp: 1; font-size: .95rem; }
+    .song-play { width: 32px; height: 32px; }
+  }
+  @media (max-height: 620px) {
+    .p-msg { -webkit-line-clamp: 2; font-size: 1.25rem; }
+  }
+
+  /* Celular en horizontal: foto a la izquierda, texto a la derecha */
+  @media (orientation: landscape) and (max-height: 540px) {
+    .page { width: min(100%, 960px); }
+    .page .picado { left: 22%; right: 22%; }
+    .page.sheet {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      grid-template-rows: auto auto auto minmax(calc(var(--u) * 3.6), 1fr);
+      grid-template-areas: "photo head" "photo msg" "photo song" "photo .";
+      column-gap: 20px;
+      row-gap: 10px;
+      align-items: start;
+      padding: calc(30px + 4.5%) 28px 26px;
+    }
+    .page.sheet .photo-slot { grid-area: photo; height: 100%; }
+    .page.sheet .p-head { grid-area: head; }
+    .page.sheet .p-msg { grid-area: msg; -webkit-line-clamp: 2; }
+    .page.sheet .p-title { -webkit-line-clamp: 1; font-size: clamp(1.4rem, 8dvh, 2rem); }
+    .page.sheet .song { grid-area: song; }
+    .page.cover { padding: calc(30px + 4.5%) 32px calc(28dvh + 30px); }
+    .lego-wall { left: 50%; right: auto; width: min(calc(100% - 24px), 88dvh); transform: translateX(-50%); }
+    .cover-label h1 { font-size: clamp(1.8rem, 10dvh, 4.4rem); }
+    .cover-label p { margin-top: 6px; }
+    .flourish { margin-top: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cloud, .star, .firefly, .picado .flag, .vinyl, .cover-hint, .brick { animation: none; }
+    .panel, .backdrop { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <section class="page" id="page" aria-live="polite"></section>
+</main>
+
+<!-- El editor solo aparece al abrir la página con ?editar en la URL. -->
+<button class="fab" id="openPanel" aria-label="Editar álbum" title="Editar álbum" hidden>✎</button>
+<div class="backdrop" id="backdrop"></div>
+
+<aside class="panel" id="panel" aria-label="Editar álbum" inert hidden>
+  <header>
+    <h2>Editar álbum</h2>
+    <button class="icon-btn" id="closePanel" aria-label="Cerrar">×</button>
+  </header>
+  <div class="panel-body">
+    <section>
+      <h3>Portada</h3>
+      <label>Título del álbum<input id="albumTitle" placeholder="Nuestro álbum"></label>
+      <label>Subtítulo<input id="albumSub" placeholder="Ej. Verano 2026"></label>
+      <label class="check"><input type="checkbox" id="vintage"> Efecto vintage en las fotos</label>
+    </section>
+
+    <section>
+      <h3 id="formTitle">Agregar página</h3>
+      <form id="pageForm">
+        <label>Título<input name="titulo" required placeholder="Ej. Nuestro primer viaje"></label>
+        <fieldset>
+          <legend>Fotos de Google Drive (de 1 a 4)</legend>
+          <label>Foto 1<input name="foto0" required placeholder="https://drive.google.com/file/d/…/view"></label>
+          <label>Foto 2 (opcional)<input name="foto1" placeholder="Enlace de Drive"></label>
+          <label>Foto 3 (opcional)<input name="foto2" placeholder="Enlace de Drive"></label>
+          <label>Foto 4 (opcional)<input name="foto3" placeholder="Enlace de Drive"></label>
+          <div class="preview" id="preview"></div>
+        </fieldset>
+        <label>Mensaje o frase<textarea name="mensaje" rows="3" placeholder="Escribe algo bonito…"></textarea></label>
+        <fieldset>
+          <legend>Nuestra canción (opcional)</legend>
+          <label>Canción<input name="cancion" placeholder="Nombre de la canción"></label>
+          <label>Artista<input name="artista" placeholder="Ej. El Coyote y su Banda Tierra Santa"></label>
+          <label>Enlace de YouTube o Spotify<input name="enlace" type="url" placeholder="Si lo dejas vacío, se busca en YouTube"></label>
+        </fieldset>
+        <div class="row">
+          <button type="submit" class="btn primary" id="submitBtn">Agregar</button>
+          <button type="button" class="btn" id="cancelEdit" hidden>Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h3>Páginas</h3>
+      <ol class="page-list" id="pageList"></ol>
+    </section>
+
+    <section>
+      <h3>Guardar y compartir</h3>
+      <p class="note">Los cambios se guardan en este navegador. Para compartir el álbum o no perderlo, descarga una copia: es un solo archivo .html con todo adentro.</p>
+      <button class="btn primary" id="download">Descargar álbum (.html)</button>
+    </section>
+
+    <details>
+      <summary>¿Cómo obtengo el enlace de una foto en Drive?</summary>
+      <ol>
+        <li>En Google Drive, clic derecho en la foto → <b>Compartir</b>.</li>
+        <li>En “Acceso general” elige <b>Cualquier persona con el enlace</b>.</li>
+        <li>Clic en <b>Copiar enlace</b> y pégalo aquí.</li>
+      </ol>
+      <p class="note">Las fotos se muestran directo desde tu Drive: si dejas de compartirlas o las borras, desaparecen del álbum. Los enlaces de carpeta no funcionan; usa el de cada foto.</p>
+    </details>
+  </div>
+</aside>
+
+<!-- Modo demo: muestra datos de prueba sin tocar Drive ni lo guardado.
+     Pon false (o borra la línea de abajo) para usar la integración con Google Drive. -->
+<script id="demo-flag">window.USE_FAKE_DATA = true;</script>
+
+<script type="application/json" id="album-data">{"id":"mi-album","titulo":"Nuestro álbum","subtitulo":"Recuerdos","vintage":true,"paginas":[]}</script>
+
+<script>
+  // Copia intacta del archivo, antes de tocar el DOM, para "Descargar álbum".
+  const ORIGINAL = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+  const $ = (s) => document.querySelector(s);
+  const page = $('#page');
+  const panel = $('#panel');
+  const form = $('#pageForm');
+  const preview = $('#preview');
+  const list = $('#pageList');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  const DEMO = window.USE_FAKE_DATA === true;
+  // album.html?editar abre el editor; sin eso solo es el visor.
+  const EDIT = new URLSearchParams(location.search).has('editar');
+
+  // Fotos públicas de picsum.photos: no dependen de Drive.
+  const FAKE_ALBUM = {
+    id: 'demo',
+    titulo: 'Tú y yo',
+    subtitulo: 'Nuestra historia',
+    vintage: true,
+    paginas: [
+      { titulo: 'Donde todo empezó', fotos: ['https://picsum.photos/id/1015/900/650'], mensaje: 'Ese día no sabía\nque ibas a ser mi persona favorita.', cancion: 'Nuestra canción', artista: 'El Coyote y su Banda Tierra Santa' },
+      { titulo: 'La enamorada', fotos: ['https://picsum.photos/id/64/800/800', 'https://picsum.photos/id/1027/700/900'], mensaje: 'Tu sonrisa. Siempre tu sonrisa.' },
+      { titulo: 'Domingos contigo', fotos: ['https://picsum.photos/id/1043/700/900', 'https://picsum.photos/id/1080/900/650', 'https://picsum.photos/id/1062/800/800'], mensaje: 'Sin prisa,\nsin reloj,\nsolo nosotros.', cancion: 'La que cantamos en el carro', artista: 'El Coyote y su Banda Tierra Santa' },
+      { titulo: 'El aniversario', fotos: ['https://picsum.photos/id/1039/900/650', 'https://picsum.photos/id/1011/900/650', 'https://picsum.photos/id/1016/800/800', 'https://picsum.photos/id/1025/800/800'], mensaje: 'Un año más, y todos los que faltan.' },
+      { titulo: 'Atardeceres juntos', fotos: ['https://picsum.photos/id/1011/900/650'], mensaje: 'Te quiero más que ayer\ny menos que mañana.' },
+      { titulo: 'Foto rota (prueba de error)', fotos: ['https://drive.google.com/file/d/ESTE_ID_NO_EXISTE_0000000000/view', 'https://picsum.photos/id/1015/900/650'], mensaje: 'Así se ve cuando una foto no carga.' },
+    ],
+  };
+
+  const embedded = JSON.parse($('#album-data').textContent);
+  const KEY = 'album-retro:' + embedded.id;
+  let state = load();
+  let idx = 0;
+  let busy = false;
+  let editing = -1;
+
+  function load() {
+    // En demo cada recarga empieza de cero y no se lee lo guardado.
+    if (DEMO) return structuredClone(FAKE_ALBUM);
+    try {
+      const saved = localStorage.getItem(KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return embedded;
+  }
+
+  function save() {
+    if (DEMO) return;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function h(tag, props = {}, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k === 'class') el.className = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (v !== false && v != null) el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat()) {
+      if (kid == null || kid === false || kid === '') continue;
+      el.append(kid.nodeType ? kid : String(kid));
+    }
+    return el;
+  }
+
+  // ---------- Google Drive ----------
+  function driveId(link) {
+    const s = (link || '').trim();
+    const m = s.match(/\/d\/([\w-]{20,})/) || s.match(/[?&]id=([\w-]{20,})/);
+    if (m) return m[1];
+    if (/^[\w-]{25,}$/.test(s)) return s;
+    return null;
+  }
+
+  function photo(link, size, small) {
+    const id = driveId(link);
+    const sources = id
+      ? [`https://drive.google.com/thumbnail?id=${id}&sz=w${size}`, `https://lh3.googleusercontent.com/d/${id}=w${size}`]
+      : [link.trim()];
+    const img = h('img', { alt: '', referrerpolicy: 'no-referrer' });
+    let i = 0;
+    img.addEventListener('error', () => {
+      i++;
+      if (i < sources.length) img.src = sources[i];
+      else img.replaceWith(broken(small));
+    });
+    img.src = sources[0];
+    return img;
+  }
+
+  function broken(small) {
+    if (small) return h('div', { class: 'broken' }, '?');
+    return h('div', { class: 'broken', title: 'No se pudo cargar la foto' },
+      h('span', { class: 'broken-icon', 'aria-hidden': 'true' }, '📷'),
+      h('span', { class: 'broken-text' }, 'No se pudo cargar la foto'),
+      h('small', {}, 'Revisa que esté compartida como “Cualquier persona con el enlace”.'));
+  }
+
+  // ---------- Render ----------
+  // Número "al azar" pero fijo para cada página y foto: la pose no cambia al volver.
+  function seeded(seed) {
+    const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  const MAX_FOTOS = 4;
+
+  // Fotos de una página (las guardadas antes tenían una sola en "foto").
+  function fotosDe(p) {
+    return (p.fotos && p.fotos.length ? p.fotos : [p.foto]).filter(Boolean).slice(0, MAX_FOTOS);
+  }
+
+  // Cada foto va en polaroid con cinta y su propia pose: se alternan izquierda/derecha,
+  // con ángulo, desacomodo y cinta distintos. Sola se inclina menos para no salirse.
+  function frame(link, n, j, count, size) {
+    const r = (k) => seeded(n * 31 + j * 7 + k);
+    const side = (n + j) % 2 ? 1 : -1;
+    const [min, max] = count === 1 ? [1, 3.5] : [2, 6];
+    const tilt = side * (min + r(1) * (max - min));
+    const shift = count === 1 ? 0 : 6;
+    const style = [
+      `--tilt:${tilt.toFixed(1)}deg`,
+      `--dx:${((r(2) * 2 - 1) * shift).toFixed(1)}px`,
+      `--dy:${((r(3) * 2 - 1) * shift).toFixed(1)}px`,
+      `--tape-rot:${(r(4) * 16 - 8).toFixed(1)}deg`,
+      `--tape-x:${(38 + r(5) * 24).toFixed(0)}%`,
+      `z-index:${1 + Math.floor(r(6) * 4)}`,
+    ].join(';');
+    return h('figure', { class: 'frame polaroid', style }, h('div', { class: 'tape' }), photo(link, size));
+  }
+
+  // De 1 a 4 fotos acomodadas según cuántas son.
+  function photoGrid(p, n) {
+    const fotos = fotosDe(p);
+    const size = fotos.length === 1 ? 1600 : 1000;
+    return h('div', { class: `photo-grid photos-${fotos.length}` },
+      fotos.map((link, j) => h('div', { class: 'photo-cell' }, frame(link, n, j, fotos.length, size))));
+  }
+
+
+  // Tira de papel picado; cada bandera se mece un poco.
+  const PICADO_COLORS = ['#d6336c', '#1c9c98', '#e3a33a', '#8a6bb8'];
+
+  function papelPicado(n, seed = 0) {
+    const w = n * 46;
+    let flags = '';
+    for (let i = 0; i < n; i++) {
+      const x = i * 46 + 3;
+      let d = `M${x} 4h40v32`;
+      for (let k = 0; k < 5; k++) d += 'l-4 6l-4-6';
+      d += 'Z';
+      // Recortes del papel (fill-rule evenodd).
+      d += `M${x + 20} 11l6 8-6 8-6-8Z`;
+      for (const [cx, cy] of [[8, 12], [32, 12], [8, 28], [32, 28]]) d += `M${x + cx} ${cy - 3}l3 3-3 3-3-3Z`;
+      const color = PICADO_COLORS[(i + seed) % PICADO_COLORS.length];
+      flags += `<path class="flag" style="--delay:${-(i * .45).toFixed(2)}s" d="${d}" fill="${color}" fill-rule="evenodd" opacity=".88"/>`;
+    }
+    const el = h('div', { class: 'picado', 'aria-hidden': 'true' });
+    el.innerHTML = `<svg viewBox="0 0 ${w} 46"><path d="M0 4Q${w / 2} 9 ${w} 4" fill="none" stroke="rgba(59,35,80,.35)" stroke-width="1.2"/>${flags}</svg>`;
+    return el;
+  }
+
+  function song(p) {
+    if (!p.cancion) return null;
+    const href = /^https?:\/\//.test(p.enlace || '')
+      ? p.enlace
+      : 'https://www.youtube.com/results?search_query=' + encodeURIComponent([p.cancion, p.artista].filter(Boolean).join(' '));
+    return h('a', { class: 'song', href, target: '_blank', rel: 'noopener', 'aria-label': 'Escuchar ' + p.cancion },
+      h('span', { class: 'vinyl', 'aria-hidden': 'true' }),
+      h('span', { class: 'song-text' },
+        h('span', { class: 'song-label' }, '♪ Nuestra canción'),
+        h('span', { class: 'song-title' }, p.cancion),
+        p.artista && h('span', { class: 'song-artist' }, p.artista)),
+      h('span', { class: 'song-play', 'aria-hidden': 'true' }, '▶'));
+  }
+
+  // Sombrero texano oscuro (cinta rosa mexicano, conchita oro), puesto sobre la barra de la letra.
+  const HAT = `<svg viewBox="0 -10 140 80" aria-hidden="true">
+    <defs>
+      <linearGradient id="copa" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1e1310"/><stop offset=".4" stop-color="#4a3226"/><stop offset=".7" stop-color="#352219"/><stop offset="1" stop-color="#170e0b"/></linearGradient>
+      <linearGradient id="ala" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c1d16"/><stop offset="1" stop-color="#120a08"/></linearGradient>
+      <linearGradient id="ala-top" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2c1d16"/><stop offset=".5" stop-color="#5a3d2e"/><stop offset="1" stop-color="#241712"/></linearGradient>
+    </defs>
+    <path d="M4 22C12 46 40 62 70 62s58-16 66-40c-8 16-32 28-66 28S12 38 4 22z" fill="url(#ala)"/>
+    <path d="M4 22c8 12 32 24 66 24s58-12 66-24c-12 10-36 16-66 16S16 32 4 22z" fill="url(#ala-top)"/>
+    <g transform="translate(0 42) scale(1 1.35) translate(0 -42)">
+      <path d="M44 42C41 28 42 14 50 8c6-4 12 3 20 3s14-7 20-3c8 6 9 20 6 34-10 4-42 4-52 0z" fill="url(#copa)"/>
+      <g fill="none" stroke-linecap="round">
+        <path d="M58 13c2 8 2 16 0 24" stroke="#000" stroke-opacity=".55" stroke-width="2.4"/>
+        <path d="M82 13c-2 8-2 16 0 24" stroke="#000" stroke-opacity=".55" stroke-width="2.4"/>
+        <path d="M70 11c-1 5-1 10 0 14" stroke="#000" stroke-opacity=".4" stroke-width="2"/>
+        <path d="M50 14c-3 6-4 14-3 22" stroke="#fff" stroke-opacity=".18" stroke-width="3"/>
+      </g>
+      <path d="M44 34c14 4 38 4 52 0l1 7c-14 4-40 4-54 0z" fill="#d6336c"/>
+      <circle cx="52" cy="38.5" r="3.4" fill="#f1c77a" stroke="#a8701f" stroke-width="1"/>
+    </g>
+  </svg>`;
+
+  // El título de portada con el sombrero puesto en la primera letra.
+  function coverTitle(text) {
+    const [first, ...rest] = Array.from(text);
+    const hat = h('span', { class: 'hat' });
+    hat.innerHTML = HAT;
+    return h('h1', { 'aria-label': text },
+      h('span', { class: 'hat-letter', 'aria-hidden': 'true' }, hat, first),
+      h('span', { 'aria-hidden': 'true' }, rest.join('')));
+  }
+
+  // Muro de LEGO: 3 filas de 12 botones, casi todo piezas de 1 y 2; máximo una de 3 o 4 por fila.
+  const LEGO_COLORS = ['#d6336c', '#1c9c98', '#e3a33a', '#8a6bb8'];
+  const LEGO_WIDTH = 12;
+  const LEGO_SIZES = [[1, .45], [2, .45], [3, .06], [4, .04]]; // [botones, probabilidad]
+
+  function pickSize(max) {
+    const options = LEGO_SIZES.filter(([n]) => n <= max);
+    let roll = Math.random() * options.reduce((sum, [, w]) => sum + w, 0);
+    for (const [n, w] of options) if ((roll -= w) <= 0) return n;
+    return options[0][0];
+  }
+
+  // Una fila con las menos uniones posibles alineadas con las de la fila de abajo
+  // (con tantas piezas de 1 no siempre se puede evitar del todo).
+  function legoRow(seamsBelow) {
+    let best = null;
+    for (let tries = 0; tries < 40; tries++) {
+      const sizes = [];
+      let x = 0;
+      let big = false;
+      while (x < LEGO_WIDTH) {
+        const n = pickSize(Math.min(LEGO_WIDTH - x, big ? 2 : 4));
+        if (n >= 3) big = true;
+        sizes.push(n);
+        x += n;
+      }
+      const seams = new Set();
+      sizes.slice(0, -1).reduce((pos, n) => (seams.add(pos + n), pos + n), 0);
+      const shared = [...seams].filter((sx) => seamsBelow.has(sx)).length;
+      if (!best || shared < best.shared) best = { sizes, seams, shared };
+      if (shared === 0) break;
+    }
+    return best;
+  }
+
+  function legoWall() {
+    const wall = h('div', { class: 'lego-wall', 'aria-hidden': 'true' });
+    let seamsBelow = new Set();
+    for (let r = 0; r < 3; r++) {
+      const { sizes, seams } = legoRow(seamsBelow);
+      seamsBelow = seams;
+      const rowEl = h('div', { class: 'lego-row' });
+      let prev = -1;
+      sizes.forEach((n, i) => {
+        let c;
+        do c = Math.floor(Math.random() * LEGO_COLORS.length); while (c === prev);
+        prev = c;
+        const delay = .5 + r * .75 + i * .09 + Math.random() * .08;
+        rowEl.append(h('span', { class: 'brick', style:
+          `--n:${n};--c:${LEGO_COLORS[c]};` +
+          `--delay:${delay.toFixed(2)}s;--rot:${Math.round(Math.random() * 40 - 20)}deg` }));
+      });
+      wall.append(rowEl);
+    }
+    return wall;
+  }
+
+  // Pie de cada hoja: media pirámide pegada a la esquina (escalones de 6, 4 y 2 botones).
+  // El bloque de la esquina, abajo a la derecha, lleva el número de página impreso:
+  // es una pieza de color como las demás, de 2 botones (o de 3 si el número es largo).
+  const STAIRS = [6, 4, 2];
+
+  function sheetFoot(n, count) {
+    const foot = h('div', { class: 'sheet-foot', 'aria-label': `Página ${n} de ${count}` });
+    let k = 0;
+    STAIRS.forEach((width, r) => {
+      const row = h('div', { class: 'lego-row', style: `--cols:${width}` });
+      const label = `${n}/${count}`;
+      const numWidth = r === 0 ? (label.length > 4 ? 3 : 2) : 0;
+      let prev = -1;
+      for (let x = 0; x < width - numWidth;) {
+        const size = pickSize(Math.min(width - numWidth - x, 2));
+        let c;
+        do c = Math.floor(Math.random() * LEGO_COLORS.length); while (c === prev);
+        prev = c;
+        row.append(h('span', { class: 'brick', style:
+          `--n:${size};--c:${LEGO_COLORS[c]};--delay:${(.1 + k++ * .09).toFixed(2)}s;--rot:${Math.round(Math.random() * 30 - 15)}deg` }));
+        x += size;
+      }
+      if (numWidth) {
+        let c;
+        do c = Math.floor(Math.random() * LEGO_COLORS.length); while (c === prev);
+        row.append(h('span', { class: 'brick num', style:
+          `--n:${numWidth};--c:${LEGO_COLORS[c]};--delay:${(.1 + k++ * .09).toFixed(2)}s;--rot:-8deg` }, label));
+      }
+      foot.append(row);
+    });
+    return foot;
+  }
+
+  function total() { return state.paginas.length + 1; }
+
+  function render() {
+    document.body.classList.toggle('vintage', !!state.vintage);
+    page.replaceChildren();
+    if (idx === 0) {
+      page.className = 'page cover';
+      page.append(papelPicado(9), legoWall(), h('div', { class: 'cover-inner' },
+        h('div', { class: 'cover-label' },
+          coverTitle(state.titulo || 'Nuestro álbum'),
+          state.subtitulo && h('p', {}, state.subtitulo),
+          h('div', { class: 'flourish', 'aria-hidden': 'true' }, '✦')),
+        h('p', { class: 'cover-hint' }, state.paginas.length > 0
+          ? 'Desliza para abrir →'
+          : EDIT ? 'Toca ✎ para agregar tu primera foto' : 'Este álbum aún no tiene fotos')));
+    } else {
+      const p = state.paginas[idx - 1];
+      page.className = 'page sheet';
+      page.append(...[papelPicado(10, idx),
+        h('header', { class: 'p-head' },
+          h('p', { class: 'chapter' }, `Capítulo ${idx}`),
+          p.titulo && h('h2', { class: 'p-title' }, p.titulo),
+          h('div', { class: 'flourish', 'aria-hidden': 'true' }, '✦')),
+        h('div', { class: 'photo-slot' }, photoGrid(p, idx)),
+        p.mensaje && h('p', { class: 'p-msg' }, p.mensaje),
+        song(p),
+        sheetFoot(idx, state.paginas.length)].filter(Boolean));
+    }
+  }
+
+  function animate(cls) {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        page.classList.remove(cls);
+        resolve();
+      };
+      page.addEventListener('animationend', finish, { once: true });
+      page.classList.add(cls);
+      setTimeout(finish, 700);
+    });
+  }
+
+  async function go(delta) {
+    const target = Math.min(Math.max(idx + delta, 0), total() - 1);
+    if (target === idx || busy) return;
+    if (reduceMotion.matches) { idx = target; render(); return; }
+    busy = true;
+    await animate(delta > 0 ? 'out-next' : 'out-prev');
+    idx = target;
+    render();
+    await animate(delta > 0 ? 'in-next' : 'in-prev');
+    busy = false;
+  }
+
+  function renderList() {
+    list.replaceChildren();
+    if (state.paginas.length === 0) {
+      list.append(h('li', { class: 'empty' }, 'Aún no hay fotos.'));
+      return;
+    }
+    const last = state.paginas.length - 1;
+    state.paginas.forEach((p, i) => {
+      list.append(h('li', {},
+        h('button', { class: 'thumb', 'aria-label': 'Ver ' + (p.titulo || 'foto'), onclick: () => { idx = i + 1; render(); closePanel(); } },
+          photo(fotosDe(p)[0] || '', 200, true)),
+        h('span', { class: 'li-title' }, p.titulo || '(sin título)'),
+        h('div', { class: 'li-actions' },
+          h('button', { 'aria-label': 'Subir', title: 'Subir', disabled: i === 0, onclick: () => move(i, -1) }, '↑'),
+          h('button', { 'aria-label': 'Bajar', title: 'Bajar', disabled: i === last, onclick: () => move(i, 1) }, '↓'),
+          h('button', { 'aria-label': 'Editar', title: 'Editar', onclick: () => startEdit(i) }, '✎'),
+          h('button', { 'aria-label': 'Eliminar', title: 'Eliminar', onclick: () => removePage(i) }, '🗑'))));
+    });
+  }
+
+  function commit() {
+    save();
+    renderList();
+    idx = Math.min(idx, total() - 1);
+    render();
+  }
+
+  // ---------- Edición ----------
+  function move(i, d) {
+    const j = i + d;
+    [state.paginas[i], state.paginas[j]] = [state.paginas[j], state.paginas[i]];
+    if (editing === i) editing = j;
+    else if (editing === j) editing = i;
+    idx = j + 1;
+    commit();
+  }
+
+  function removePage(i) {
+    if (!confirm(`¿Eliminar “${state.paginas[i].titulo || 'esta foto'}”?`)) return;
+    state.paginas.splice(i, 1);
+    if (editing === i) resetForm();
+    else if (editing > i) editing--;
+    commit();
+  }
+
+  function startEdit(i) {
+    const p = state.paginas[i];
+    editing = i;
+    form.elements.titulo.value = p.titulo || '';
+    const fotos = fotosDe(p);
+    for (let j = 0; j < MAX_FOTOS; j++) form.elements['foto' + j].value = fotos[j] || '';
+    form.elements.mensaje.value = p.mensaje || '';
+    form.elements.cancion.value = p.cancion || '';
+    form.elements.artista.value = p.artista || '';
+    form.elements.enlace.value = p.enlace || '';
+    $('#formTitle').textContent = 'Editar página';
+    $('#submitBtn').textContent = 'Guardar cambios';
+    $('#cancelEdit').hidden = false;
+    updatePreview();
+    idx = i + 1;
+    render();
+    form.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  function resetForm() {
+    editing = -1;
+    form.reset();
+    $('#formTitle').textContent = 'Agregar página';
+    $('#submitBtn').textContent = 'Agregar';
+    $('#cancelEdit').hidden = true;
+    preview.replaceChildren();
+  }
+
+  function formFotos() {
+    return Array.from({ length: MAX_FOTOS }, (_, j) => form.elements['foto' + j].value.trim()).filter(Boolean);
+  }
+
+  function updatePreview() {
+    preview.replaceChildren();
+    formFotos().forEach((link, j) => {
+      if (/\/folders\//.test(link)) {
+        preview.append(h('p', {}, `Foto ${j + 1}: ese es un enlace de carpeta. Pega el enlace de cada foto.`));
+      } else if (!driveId(link) && !/^https?:\/\//.test(link)) {
+        preview.append(h('p', {}, `Foto ${j + 1}: no reconozco ese enlace. Cópialo desde “Compartir” en Drive.`));
+      } else {
+        preview.append(photo(link, 300, true));
+      }
+    });
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const p = {
+      titulo: form.elements.titulo.value.trim(),
+      fotos: formFotos(),
+      mensaje: form.elements.mensaje.value.trim(),
+      cancion: form.elements.cancion.value.trim(),
+      artista: form.elements.artista.value.trim(),
+      enlace: form.elements.enlace.value.trim(),
+    };
+    if (editing >= 0) {
+      state.paginas[editing] = p;
+      idx = editing + 1;
+    } else {
+      state.paginas.push(p);
+      idx = state.paginas.length;
+    }
+    resetForm();
+    commit();
+  });
+  for (let j = 0; j < MAX_FOTOS; j++) form.elements['foto' + j].addEventListener('input', updatePreview);
+  $('#cancelEdit').addEventListener('click', resetForm);
+
+  $('#albumTitle').addEventListener('input', (e) => { state.titulo = e.target.value; commit(); });
+  $('#albumSub').addEventListener('input', (e) => { state.subtitulo = e.target.value; commit(); });
+  $('#vintage').addEventListener('change', (e) => { state.vintage = e.target.checked; commit(); });
+
+  // ---------- Descargar ----------
+  function slug(s) {
+    return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'album';
+  }
+
+  $('#download').addEventListener('click', () => {
+    const copy = { ...state, id: 'album-' + Date.now().toString(36) };
+    const json = JSON.stringify(copy).replace(/</g, '\\u003c');
+    const html = ORIGINAL
+      .replace(/<script id="demo-flag">[\s\S]*?<\/script>/, '')
+      .replace(
+        /(<script type="application\/json" id="album-data">)[\s\S]*?(<\/script>)/,
+        (_, open, close) => open + json + close);
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    const a = h('a', { href: url, download: slug(state.titulo) + '.html' });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  // ---------- Panel ----------
+  function openPanel() {
+    if (!EDIT) return;
+    $('#albumTitle').value = state.titulo || '';
+    $('#albumSub').value = state.subtitulo || '';
+    $('#vintage').checked = !!state.vintage;
+    document.body.classList.add('panel-open');
+    panel.inert = false;
+  }
+
+  function closePanel() {
+    document.body.classList.remove('panel-open');
+    panel.inert = true;
+  }
+
+  $('#openPanel').addEventListener('click', openPanel);
+  $('#closePanel').addEventListener('click', closePanel);
+  $('#backdrop').addEventListener('click', closePanel);
+
+  if (EDIT) {
+    $('#openPanel').hidden = false;
+    panel.hidden = false;
+  }
+
+  // ---------- Navegación: deslizar, tocar los lados o flechas ----------
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closePanel(); return; }
+    if (document.body.classList.contains('panel-open')) return;
+    if (e.key === 'ArrowRight') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+
+  let touchX = 0;
+  let touchY = 0;
+  const stage = $('#stage');
+  stage.addEventListener('touchstart', (e) => {
+    touchX = e.touches[0].clientX;
+    touchY = e.touches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    const dy = e.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+  });
+
+  // Toque en el tercio izquierdo = atrás, tercio derecho = adelante.
+  // Toque en el centro = lluvia de corazones.
+  stage.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return;
+    const x = e.clientX / window.innerWidth;
+    if (x < 1 / 3) go(-1);
+    else if (x > 2 / 3) go(1);
+    else burst(e.clientX, e.clientY);
+  });
+
+  const HEART_COLORS = ['#d6336c', '#e3a33a', '#f6c7d6', '#bfe3df', '#f8dfae'];
+
+  function burst(x, y) {
+    if (reduceMotion.matches) return;
+    for (let i = 0; i < 7; i++) {
+      const angle = (Math.PI * 2 * i) / 7 + Math.random() * .4;
+      const dist = 60 + Math.random() * 70;
+      const el = h('span', { class: 'burst', style:
+        `left:${x}px;top:${y}px;--c:${HEART_COLORS[i % HEART_COLORS.length]};--m:var(${i % 2 ? '--sparkle' : '--heart'});` +
+        `--x:${Math.cos(angle) * dist}px;--y:${Math.sin(angle) * dist - 40}px;--r:${Math.random() * 60 - 30}deg` });
+      document.body.append(el);
+      el.addEventListener('animationend', () => el.remove());
+    }
+  }
+
+  // Cielo: nubes que pasan, estrellas arriba y luciérnagas abajo.
+  {
+    const r = (a, b) => a + Math.random() * (b - a);
+    const sky = h('div', { class: 'sky', 'aria-hidden': 'true' });
+    for (let i = 0; i < 4; i++) {
+      sky.append(h('span', { class: 'cloud', style:
+        `top:${r(4, 70)}%;--w:${r(180, 340)}px;--o:${r(.35, .7)};--d:${r(70, 120)}s;--delay:${-r(0, 120)}s` }));
+    }
+    for (let i = 0; i < 26; i++) {
+      sky.append(h('span', { class: 'star', style:
+        `left:${r(0, 100)}%;top:${r(0, 38)}%;--s:${r(1.5, 3)}px;--d:${r(2, 5)}s;--delay:${-r(0, 5)}s` }));
+    }
+    for (let i = 0; i < 10; i++) {
+      sky.append(h('span', { class: 'firefly', style:
+        `left:${r(0, 100)}%;top:${r(55, 95)}%;--x:${r(-40, 40)}px;--y:${r(-50, 10)}px;--d:${r(5, 9)}s;--delay:${-r(0, 8)}s` }));
+    }
+    document.body.prepend(sky);
+  }
+
+  if (DEMO) {
+    document.body.append(h('div', { class: 'demo-badge', title: 'Pon USE_FAKE_DATA = false para usar Google Drive' }, 'Modo demo · datos de prueba'));
+    $('.panel .note').textContent = 'Modo demo: los cambios no se guardan y se pierden al recargar. Puedes descargar una copia para probarlo.';
+  }
+
+  renderList();
+  render();
+</script>
+</body>
+</html>
