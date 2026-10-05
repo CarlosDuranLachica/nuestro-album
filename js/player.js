@@ -1,6 +1,6 @@
 import { h, reduceMotion } from './utils.js';
 import { burst } from './decor.js';
-import { memoryCard, coverCard, finaleCard, fotosDe } from './cards.js';
+import { memoryCard, coverCard, finaleCard, fotosDe, preloadFotos } from './cards.js';
 import { openLightbox } from './lightbox.js';
 
 const ICONS = {
@@ -68,6 +68,8 @@ export function createPlayer({ album, stage, slot, wall, wallEl, seconds, canEdi
     wall.setActive(i);
     stage.classList.toggle('is-cover', current < 0);
     restartTimer();
+    // Mientras se ve este recuerdo, se van cargando las fotos del siguiente.
+    preloadFotos(album.paginas[i + 1]);
   }
 
   async function next() {

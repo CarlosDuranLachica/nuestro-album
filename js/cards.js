@@ -1,5 +1,5 @@
 import { h, seeded } from './utils.js';
-import { photo } from './drive.js';
+import { photo, preload } from './drive.js';
 import { coverTitle } from './decor.js';
 
 export const MAX_FOTOS = 4;
@@ -7,6 +7,15 @@ export const MAX_FOTOS = 4;
 // Fotos de un recuerdo (los guardados antes tenían una sola en "foto").
 export function fotosDe(p) {
   return (p.fotos && p.fotos.length ? p.fotos : [p.foto]).filter(Boolean).slice(0, MAX_FOTOS);
+}
+
+// Con una sola foto se pide más grande porque ocupa toda la tarjeta.
+const sizeFor = (count) => (count === 1 ? 1600 : 1000);
+
+// Adelanta la descarga de las fotos de un recuerdo para que ya estén listas al mostrarlo.
+export function preloadFotos(p) {
+  const fotos = p ? fotosDe(p) : [];
+  fotos.forEach((link) => preload(link, sizeFor(fotos.length)));
 }
 
 // Cada foto va en polaroid con cinta y su propia pose: se alternan izquierda/derecha,
@@ -40,7 +49,7 @@ function photoGrid(p, n) {
       h('span', { class: 'broken-text' }, 'Foto pendiente'));
     return h('div', { class: 'photo-grid photos-1' }, h('div', { class: 'photo-cell' }, frame(pending, n, 0, 1)));
   }
-  const size = fotos.length === 1 ? 1600 : 1000;
+  const size = sizeFor(fotos.length);
   return h('div', { class: `photo-grid photos-${fotos.length}` },
     fotos.map((link, j) => h('div', { class: 'photo-cell' }, frame(photo(link, size), n, j, fotos.length, true))));
 }

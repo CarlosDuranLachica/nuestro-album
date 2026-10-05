@@ -12,11 +12,15 @@ export function driveId(link) {
 
 // <img> que prueba las dos URLs públicas de Drive y, si ninguna carga, se cambia por el aviso.
 // Las fotos subidas en el editor (aún no copiadas a fotos/) salen de este navegador.
-export function photo(link, size, small) {
+function sourcesOf(link, size) {
   const id = driveId(link);
-  const sources = id
+  return id
     ? [`https://drive.google.com/thumbnail?id=${id}&sz=w${size}`, `https://lh3.googleusercontent.com/d/${id}=w${size}`]
     : [uploadedUrl(link), link.trim()].filter(Boolean);
+}
+
+export function photo(link, size, small) {
+  const sources = sourcesOf(link, size);
   if (!sources.length) return broken(small);
   const img = h('img', { alt: '', referrerpolicy: 'no-referrer', decoding: 'async' });
   let i = 0;
@@ -27,6 +31,23 @@ export function photo(link, size, small) {
   });
   img.src = sources[0];
   return img;
+}
+
+// Pide la foto antes de que se vea (misma URL que usará photo(), así sale de la caché)
+// y la deja decodificada. Se guardan solo las últimas para no llenar la memoria.
+const warm = new Map();
+const MAX_WARM = 12;
+
+export function preload(link, size) {
+  const src = sourcesOf(link, size)[0];
+  if (!src || warm.has(src)) return;
+  const img = new Image();
+  img.referrerPolicy = 'no-referrer';
+  img.decoding = 'async';
+  img.src = src;
+  img.decode().catch(() => {});
+  warm.set(src, img);
+  if (warm.size > MAX_WARM) warm.delete(warm.keys().next().value);
 }
 
 export function broken(small) {
